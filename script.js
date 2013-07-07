@@ -1,6 +1,8 @@
 $(function(){
-	var TITLE_ROWS = $("#title").attr("rows");
-	var DRAFT_ROWS = $("#draft").attr("rows");
+	//タイトル行数の初期値
+	var TITLE_ROWS = parseInt($("#title").attr("rows"));
+	//ドラフト行数の初期値
+	var DRAFT_ROWS = parseInt($("#draft").attr("rows"));
 	var storage = localStorage;
 	//storage.clear();
 	if(storage.getItem("save_title") == null){//タイトルのデータが保存されていない場合
@@ -49,6 +51,14 @@ $(function(){
 	$("textarea").bind("keyup",function(){
 		var id = $(this).attr("id");
 		var cur = this;
+		//改行文字数
+		var len = 0;
+
+		if($(this).val().match(/\n/g)){
+			//改行の個数+1行目
+			len = $(this).val().match(/\n/g).length + 1;
+		}
+		
 		//テキストエリアの文字数を計算
 		var value = $(this).val().replace(/\n/g,"");
 		//編集中のテキストエリアの行数を計算
@@ -56,11 +66,9 @@ $(function(){
 
 		//行数の初期値を設定
 		if(id == "title")var init_row = TITLE_ROWS;
-		else var init_row = DRAFT_ROWS;
+		else if(id == "draft")var init_row = DRAFT_ROWS;
 
-		if(row > init_row) $(this).attr("rows",row);
+		if(row + len > init_row) $(this).attr("rows",row + len);
 		else $(this).attr("rows",init_row);
-		
 	});
-	
 });
